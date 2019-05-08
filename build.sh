@@ -12,5 +12,3 @@ pushd src
 popd
 
 docker build -t processmaker/spark-docker-executor-java:${TAG} .
-
-docker run -it --rm --name java1 -v "$(pwd)/Script.java":/opt/executor/Script.java -w /opt/executor processmaker/spark-docker-executor-java:${TAG} ls
