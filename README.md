@@ -10,6 +10,13 @@ file that will be populated by the successful output of the script task. The scr
 It is the responsibility of the caller to have these files prepared before executing the engine via command line (or docker API).
 
 
+### Install
+
+```
+git clone https://github.com/ProcessMaker/spark-docker-executor-java.git
+./build.sh
+```
+
 ### Example data.json
 ```json
 {
