@@ -29,8 +29,7 @@ public class Script implements BaseScript {
     /**
     * This code receives a data.x and data.y and returns data.z = data.x + data.y
     */
-    public void execute(Map<String, Object> data, Map<String, Object> config, Map<String, Object> output) {
-        //Map<String, Object> data = Spark.data();
+    public void execute(Map<String, Object> data, Map<String, Object> config, Map<String, Object> output, ApiClient api) {
         Double x = (Double) data.get("x");
         Double y = (Double) data.get("y");
         Double z = x + y;
