@@ -14,7 +14,8 @@ public class Main {
         Map<String, Object> data = Spark.data();
         Map<String, Object> config = Spark.config();
         Map<String, Object> output = new HashMap<String, Object>();
-        script.execute(data, config, output);
+        ApiClient api = Spark.api();
+        script.execute(data, config, output, api);
         Spark.printOutput(output);
     }
 }

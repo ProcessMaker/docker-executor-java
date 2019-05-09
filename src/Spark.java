@@ -18,7 +18,9 @@ public class Spark {
         ApiClient client = new ApiClient();
 
         client.setBasePath(baseApiUrl);
-        client.setApiKey("Bearer " + v3Token);
+        if(v3Token != null && !v3Token.isEmpty()) {
+            client.setApiKey("Bearer " + v3Token);
+        }
         client.setConnectTimeout(connectTimeout);
         client.setDebugging(false);
         return client;

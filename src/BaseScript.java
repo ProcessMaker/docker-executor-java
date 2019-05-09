@@ -9,5 +9,5 @@ import java.util.HashMap;
 
 public interface BaseScript {
 
-    public void execute(Map<String, Object> data, Map<String, Object> config, Map<String, Object> output);
+    public void execute(Map<String, Object> data, Map<String, Object> config, Map<String, Object> output, ApiClient api);
 }
