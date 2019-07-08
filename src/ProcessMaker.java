@@ -1,4 +1,3 @@
-import org.openapitools.client.api.UsersApi;
 import ProcessMaker_Client.ApiClient;
 import com.google.gson.Gson;
 import java.io.*;
@@ -7,7 +6,7 @@ import com.google.gson.reflect.TypeToken;
 import java.util.Map;
 import java.util.HashMap;
 
-public class Spark {
+public class ProcessMaker {
 
     public static ApiClient api() {
         String baseApiUrl = System.getenv("API_HOST");
@@ -42,6 +41,14 @@ public class Spark {
 
     public static void printOutput(Map<String, Object> data) {
         String jsonString = new Gson().toJson(data);
-        System.out.println(jsonString);
+
+        // System.out.println(jsonString);
+        try {
+            Writer fileWriter = new FileWriter("output.json", false);
+            fileWriter.write(jsonString);
+            fileWriter.close();
+        } catch(Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 }

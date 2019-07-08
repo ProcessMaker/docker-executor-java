@@ -1,7 +1,7 @@
-# spark-docker-executor-java
+# docker-executor-java
 Script Task Executor Engine with Java Runtime
 
-This docker image provides a sandboxed protected environment to run custom Java scripts that are written in ProcessMaker Spark.
+This docker image provides a sandboxed protected environment to run custom Java scripts that are written in ProcessMaker 4.
 
 ## How to use
 The execution requires a data.json, config.json and an output.json file be present on the host system. The data.json represents the 
@@ -13,8 +13,9 @@ It is the responsibility of the caller to have these files prepared before execu
 ### Install
 
 ```
-git clone https://github.com/ProcessMaker/spark-docker-executor-java.git
-./build.sh
+git clone https://github.com/ProcessMaker/docker-executor-java.git
+cd docker-executor-java
+docker build -t processmaker4/docker-executor-java .
 ```
 
 ### Example data.json
@@ -54,8 +55,8 @@ public class Script implements BaseScript {
 ```bash
 $ docker run -v <path to local data.json>:/opt/executor/data.json \
   -v <path to local config.json>:/opt/executor/config.json \
-  -v <path to local script.Java>:/opt/executor/script.Java \
+  -v <path to local Script.java>:/opt/executor/Script.java \
   -v <path to local output.json>:/opt/executor/output.json \
-  processmaker/spark-docker-executor-java:dev-master \
+  processmaker4/docker-executor-java \
   /opt/executor/run.sh
 ```

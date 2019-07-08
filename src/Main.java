@@ -11,11 +11,11 @@ public class Main {
 
     public static void main(String args[]) throws FileNotFoundException {
         Script script = new Script();
-        Map<String, Object> data = Spark.data();
-        Map<String, Object> config = Spark.config();
+        Map<String, Object> data = ProcessMaker.data();
+        Map<String, Object> config = ProcessMaker.config();
         Map<String, Object> output = new HashMap<String, Object>();
-        ApiClient api = Spark.api();
+        ApiClient api = ProcessMaker.api();
         script.execute(data, config, output, api);
-        Spark.printOutput(output);
+        ProcessMaker.printOutput(output);
     }
 }
