@@ -1,4 +1,3 @@
-import org.openapitools.client.api.UsersApi;
 import ProcessMaker_Client.ApiClient;
 import com.google.gson.Gson;
 import java.io.*;

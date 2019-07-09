@@ -51,6 +51,48 @@ public class Script implements BaseScript {
 {"z":300.0}
 ```
 
+### Example using the ProcessMaker 4 SDK
+Get all users' email addresses
+```java
+import ProcessMaker_Client.ApiClient;
+import java.io.*;
+import java.util.*;
+
+import ProcessMaker_Client.ApiClient;
+import ProcessMaker_Client.ApiException;
+import ProcessMaker_Client.Configuration;
+import ProcessMaker_Client.auth.*;
+import ProcessMaker_Model.*;
+import ProcessMaker_Api.UsersApi;
+
+public class Script implements BaseScript {
+    public void execute(Map<String, Object> data, Map<String, Object> config, Map<String, Object> output, ApiClient api) {
+        UsersApi apiInstance = new UsersApi(api);
+        String filter = "";
+        String orderBy = "id";
+        String orderDirection = "asc";
+        Integer perPage = 100;
+        String include = "";
+
+        try {
+            InlineResponse20019 result = apiInstance.getUsers(filter, orderBy, orderDirection, perPage, include);
+
+            List<String> emails = new ArrayList<>();
+            for (Users u : result.getData()) {
+                emails.add(u.getEmail());
+            }
+            output.put("emails", emails);
+
+        } catch (ApiException e) {
+            System.err.println("Exception when calling UsersApi");
+            System.err.println("Status code: " + e.getCode());
+            System.err.println("Reason: " + e.getResponseBody());
+            e.printStackTrace();
+        }
+    }
+}
+```
+
 ## Command Line Usage
 ```bash
 $ docker run -v <path to local data.json>:/opt/executor/data.json \
