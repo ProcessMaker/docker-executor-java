@@ -28,19 +28,33 @@ class DockerExecutorJavaServiceProvider extends ServiceProvider
     public function boot()
     {
         \Artisan::command('docker-executor-java:install', function () {
-            // nothing to do here
+            // Copy the default custom dockerfile to the storage folder
+            copy(
+                __DIR__ . '/../storage/docker-build-config/Dockerfile-java',
+                storage_path("docker-build-config/Dockerfile-java")
+            );
+
+            // Restart the workers so they know about the new supported language
+            \Artisan::call('horizon:terminate');
+
+            // Build the base image that `executor-instance-php` inherits from
+            system("docker build -t processmaker4/executor-java:latest " . __DIR__ . '/..');
+
+            // Build the instance image. This is the same as if you were to build it from the admin UI
+            \Artisan::call('processmaker:build-script-executor java');
         });
         
         $config = [
             'name' => 'Java',
             'runner' => 'JavaRunner',
             'mime_type' => 'application/java',
-            'image' => env('SCRIPTS_JAVA_IMAGE', 'processmaker4/executor-java'),
+            'image' => env('SCRIPTS_JAVA_IMAGE', 'processmaker4/executor-instance-java:v1.0.0'),
             'options' => [
                 'invokerPackage' => "ProcessMaker_Client",
                 'modelPackage' => "ProcessMaker_Model",
                 'apiPackage' => "ProcessMaker_Api",
-            ]
+            ],
+            'init_dockerfile' => "FROM processmaker4/executor-java:latest\nARG SDK_DIR\n",
         ];
         config(['script-runners.java' => $config]);
 

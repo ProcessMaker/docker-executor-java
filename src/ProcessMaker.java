@@ -11,6 +11,7 @@ public class ProcessMaker {
     public static ApiClient api() {
         String baseApiUrl = System.getenv("API_HOST");
         String v3Token = System.getenv("API_TOKEN");
+        String verifySsl = System.getenv("API_SSL_VERIFY");
         int connectTimeout = 60000;
         int readTimeout = 120000;
 
@@ -22,6 +23,11 @@ public class ProcessMaker {
         }
         client.setConnectTimeout(connectTimeout);
         client.setDebugging(false);
+        
+        if (verifySsl.equals("0")) {
+            client.setVerifyingSsl(false);
+        }
+
         return client;
     }
 

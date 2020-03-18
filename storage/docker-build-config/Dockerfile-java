@@ -1,0 +1,5 @@
+# Install the processmaker4 SDK
+COPY $SDK_DIR /opt/executor/sdk-java
+WORKDIR /opt/executor/sdk-java
+RUN mvn clean install
+WORKDIR /opt/executor

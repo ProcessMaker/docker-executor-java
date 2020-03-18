@@ -8,7 +8,3 @@ RUN apt-get update && apt-get install -y git-core
 
 COPY /src /opt/executor
 WORKDIR /opt/executor
-RUN if [ ! -d "sdk-java" ]; then git clone --depth 1 https://github.com/ProcessMaker/sdk-java.git; fi
-WORKDIR /opt/executor/sdk-java
-RUN mvn clean install
-WORKDIR /opt/executor
