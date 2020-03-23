@@ -6,12 +6,13 @@ use Illuminate\Support\ServiceProvider;
 use ProcessMaker\Traits\PluginServiceProviderTrait;
 use ProcessMaker\Package\Packages\Events\PackageEvent;
 use ProcessMaker\Package\WebEntry\Listeners\PackageListener;
+use ProcessMaker\Models\ScriptExecutor;
 
 class DockerExecutorJavaServiceProvider extends ServiceProvider
 {
     use PluginServiceProviderTrait;
 
-    const version = '0.0.1'; // Required for PluginServiceProviderTrait
+    const version = '1.0.0'; // Required for PluginServiceProviderTrait
 
     public function register()
     {
@@ -28,20 +29,17 @@ class DockerExecutorJavaServiceProvider extends ServiceProvider
     public function boot()
     {
         \Artisan::command('docker-executor-java:install', function () {
-            // Copy the default custom dockerfile to the storage folder
-            copy(
-                __DIR__ . '/../storage/docker-build-config/Dockerfile-java',
-                storage_path("docker-build-config/Dockerfile-java")
-            );
-
-            // Restart the workers so they know about the new supported language
-            \Artisan::call('horizon:terminate');
-
-            // Build the base image that `executor-instance-php` inherits from
-            system("docker build -t processmaker4/executor-java:latest " . __DIR__ . '/..');
+            $scriptExecutor = ScriptExecutor::install([
+                'language' => 'java',
+                'title' => 'Java Executor',
+                'description' => 'Default Java Executor',
+            ]);
 
             // Build the instance image. This is the same as if you were to build it from the admin UI
             \Artisan::call('processmaker:build-script-executor java');
+            
+            // Restart the workers so they know about the new supported language
+            \Artisan::call('horizon:terminate');
         });
         
         $config = [
@@ -54,7 +52,14 @@ class DockerExecutorJavaServiceProvider extends ServiceProvider
                 'modelPackage' => "ProcessMaker_Model",
                 'apiPackage' => "ProcessMaker_Api",
             ],
-            'init_dockerfile' => "FROM processmaker4/executor-java:latest\nARG SDK_DIR\n",
+            'init_dockerfile' => [
+                "ARG SDK_DIR",
+                'COPY $SDK_DIR /opt/executor/sdk-java',
+                'WORKDIR /opt/executor/sdk-java',
+                'RUN mvn clean install',
+                'WORKDIR /opt/executor',
+            ],
+            'package_path' => __DIR__ . '/..'
         ];
         config(['script-runners.java' => $config]);
 
