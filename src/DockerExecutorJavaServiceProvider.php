@@ -46,7 +46,6 @@ class DockerExecutorJavaServiceProvider extends ServiceProvider
             'name' => 'Java',
             'runner' => 'JavaRunner',
             'mime_type' => 'application/java',
-            'image' => env('SCRIPTS_JAVA_IMAGE', 'processmaker4/executor-instance-java:v1.0.0'),
             'options' => [
                 'invokerPackage' => "ProcessMaker_Client",
                 'modelPackage' => "ProcessMaker_Model",
