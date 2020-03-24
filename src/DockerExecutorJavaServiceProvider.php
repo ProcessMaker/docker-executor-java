@@ -58,7 +58,8 @@ class DockerExecutorJavaServiceProvider extends ServiceProvider
                 'RUN mvn clean install',
                 'WORKDIR /opt/executor',
             ],
-            'package_path' => __DIR__ . '/..'
+            'package_path' => __DIR__ . '/..',
+            'package_version' => self::version,
         ];
         config(['script-runners.java' => $config]);
 
