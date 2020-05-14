@@ -6,12 +6,13 @@ use Illuminate\Support\ServiceProvider;
 use ProcessMaker\Traits\PluginServiceProviderTrait;
 use ProcessMaker\Package\Packages\Events\PackageEvent;
 use ProcessMaker\Package\WebEntry\Listeners\PackageListener;
+use ProcessMaker\Models\ScriptExecutor;
 
 class DockerExecutorJavaServiceProvider extends ServiceProvider
 {
     use PluginServiceProviderTrait;
 
-    const version = '0.0.1'; // Required for PluginServiceProviderTrait
+    const version = '1.0.0'; // Required for PluginServiceProviderTrait
 
     public function register()
     {
@@ -28,19 +29,37 @@ class DockerExecutorJavaServiceProvider extends ServiceProvider
     public function boot()
     {
         \Artisan::command('docker-executor-java:install', function () {
-            // nothing to do here
+            $scriptExecutor = ScriptExecutor::install([
+                'language' => 'java',
+                'title' => 'Java Executor',
+                'description' => 'Default Java Executor',
+            ]);
+
+            // Build the instance image. This is the same as if you were to build it from the admin UI
+            \Artisan::call('processmaker:build-script-executor java');
+            
+            // Restart the workers so they know about the new supported language
+            \Artisan::call('horizon:terminate');
         });
         
         $config = [
             'name' => 'Java',
             'runner' => 'JavaRunner',
             'mime_type' => 'application/java',
-            'image' => env('SCRIPTS_JAVA_IMAGE', 'processmaker4/executor-java'),
             'options' => [
                 'invokerPackage' => "ProcessMaker_Client",
                 'modelPackage' => "ProcessMaker_Model",
                 'apiPackage' => "ProcessMaker_Api",
-            ]
+            ],
+            'init_dockerfile' => [
+                "ARG SDK_DIR",
+                'COPY $SDK_DIR /opt/executor/sdk-java',
+                'WORKDIR /opt/executor/sdk-java',
+                'RUN mvn clean install',
+                'WORKDIR /opt/executor',
+            ],
+            'package_path' => __DIR__ . '/..',
+            'package_version' => self::version,
         ];
         config(['script-runners.java' => $config]);
 
