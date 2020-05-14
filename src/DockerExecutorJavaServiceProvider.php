@@ -36,7 +36,7 @@ class DockerExecutorJavaServiceProvider extends ServiceProvider
             ]);
 
             // Build the instance image. This is the same as if you were to build it from the admin UI
-            \Artisan::call('processmaker:build-script-executor java');
+            \Artisan::call('processmaker:build-script-executor java --rebuild');
             
             // Restart the workers so they know about the new supported language
             \Artisan::call('horizon:terminate');
