@@ -16,5 +16,10 @@
                 "ProcessMaker\\Package\\DockerExecutorJava\\DockerExecutorJavaServiceProvider"
             ]
         }
+    },
+    "require": {
+        "processmaker/processmaker": "4.*",
+        "processmaker/packages": "4.*",
+        "processmaker/package-webentry": "2.*"
     }
 }

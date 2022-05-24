@@ -1,12 +1,13 @@
 <?php
+
 namespace ProcessMaker\Package\DockerExecutorJava;
 
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\ServiceProvider;
-use ProcessMaker\Traits\PluginServiceProviderTrait;
-use ProcessMaker\Package\Packages\Events\PackageEvent;
-use ProcessMaker\Package\WebEntry\Listeners\PackageListener;
 use ProcessMaker\Models\ScriptExecutor;
+use ProcessMaker\Package\Packages\Events\PackageEvent;
+use ProcessMaker\Package\DockerExecutorJava\Listeners\PackageListener;
+use ProcessMaker\Traits\PluginServiceProviderTrait;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\ServiceProvider;
 
 class DockerExecutorJavaServiceProvider extends ServiceProvider
 {
@@ -14,9 +15,7 @@ class DockerExecutorJavaServiceProvider extends ServiceProvider
 
     const version = '1.0.0'; // Required for PluginServiceProviderTrait
 
-    public function register()
-    {
-    }
+    public function register() {}
 
     /**
      * After all service provider's register methods have been called, your boot method
@@ -28,24 +27,26 @@ class DockerExecutorJavaServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        \Artisan::command('docker-executor-java:install', function () {
-            $scriptExecutor = ScriptExecutor::install([
+        Artisan::command('docker-executor-java:install', function () {
+            ScriptExecutor::install([
                 'language' => 'java',
                 'title' => 'Java Executor',
                 'description' => 'Default Java Executor',
             ]);
 
             // Build the instance image. This is the same as if you were to build it from the admin UI
-            \Artisan::call('processmaker:build-script-executor java');
-            
+            Artisan::call('processmaker:build-script-executor java');
+
             // Restart the workers so they know about the new supported language
-            \Artisan::call('horizon:terminate');
+            Artisan::call('horizon:terminate');
         });
-        
-        $config = [
+
+        config(['script-runners.java' => [
             'name' => 'Java',
-            'runner' => 'JavaRunner',
             'mime_type' => 'application/java',
+            'package_path' => __DIR__ . '/..',
+            'package_version' => self::version,
+            'runner' => 'JavaRunner',
             'options' => [
                 'invokerPackage' => "ProcessMaker_Client",
                 'modelPackage' => "ProcessMaker_Model",
@@ -58,10 +59,7 @@ class DockerExecutorJavaServiceProvider extends ServiceProvider
                 'RUN mvn clean install',
                 'WORKDIR /opt/executor',
             ],
-            'package_path' => __DIR__ . '/..',
-            'package_version' => self::version,
-        ];
-        config(['script-runners.java' => $config]);
+        ]]);
 
         $this->app['events']->listen(PackageEvent::class, PackageListener::class);
 
