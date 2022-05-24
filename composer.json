@@ -19,7 +19,6 @@
     },
     "require": {
         "processmaker/processmaker": "4.*",
-        "processmaker/packages": "4.*",
-        "processmaker/package-webentry": "2.*"
+        "processmaker/packages": "4.*"
     }
 }
