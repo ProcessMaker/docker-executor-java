@@ -17,6 +17,7 @@ class JavaRunner extends Base
         $dockerConfig['image'] = config('script-runners.java.image');
         $dockerConfig['command'] = '/bin/sh /opt/executor/run.sh';
         $dockerConfig['inputs']['/opt/executor/Script.java'] = $code;
+
         return $dockerConfig;
     }
 }
