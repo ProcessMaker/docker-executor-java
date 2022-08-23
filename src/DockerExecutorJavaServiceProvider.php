@@ -2,12 +2,12 @@
 
 namespace ProcessMaker\Package\DockerExecutorJava;
 
-use ProcessMaker\Models\ScriptExecutor;
-use ProcessMaker\Package\Packages\Events\PackageEvent;
-use ProcessMaker\Package\DockerExecutorJava\Listeners\PackageListener;
-use ProcessMaker\Traits\PluginServiceProviderTrait;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\ServiceProvider;
+use ProcessMaker\Models\ScriptExecutor;
+use ProcessMaker\Package\DockerExecutorJava\Listeners\PackageListener;
+use ProcessMaker\Package\Packages\Events\PackageEvent;
+use ProcessMaker\Traits\PluginServiceProviderTrait;
 
 class DockerExecutorJavaServiceProvider extends ServiceProvider
 {
@@ -15,7 +15,9 @@ class DockerExecutorJavaServiceProvider extends ServiceProvider
 
     const version = '1.0.0'; // Required for PluginServiceProviderTrait
 
-    public function register() {}
+    public function register()
+    {
+    }
 
     /**
      * After all service provider's register methods have been called, your boot method
@@ -48,12 +50,12 @@ class DockerExecutorJavaServiceProvider extends ServiceProvider
             'package_version' => self::version,
             'runner' => 'JavaRunner',
             'options' => [
-                'invokerPackage' => "ProcessMaker_Client",
-                'modelPackage' => "ProcessMaker_Model",
-                'apiPackage' => "ProcessMaker_Api",
+                'invokerPackage' => 'ProcessMaker_Client',
+                'modelPackage' => 'ProcessMaker_Model',
+                'apiPackage' => 'ProcessMaker_Api',
             ],
             'init_dockerfile' => [
-                "ARG SDK_DIR",
+                'ARG SDK_DIR',
                 'COPY $SDK_DIR /opt/executor/sdk-java',
                 'WORKDIR /opt/executor/sdk-java',
                 'RUN mvn clean install',
