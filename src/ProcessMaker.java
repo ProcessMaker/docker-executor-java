@@ -19,7 +19,7 @@ public class ProcessMaker {
 
         client.setBasePath(baseApiUrl);
         if(v3Token != null && !v3Token.isEmpty()) {
-            client.setApiKey("Bearer " + v3Token);
+            client.setBearerToken(v3Token);
         }
         client.setConnectTimeout(connectTimeout);
         client.setDebugging(false);
